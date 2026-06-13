@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Садхана · Сахаджа Йога</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async></script>
+<style>
+:root{
+  --bg:#0d1022; --bg2:#131728; --card:#181d33; --card-h:#1e2440;
+  --border:#272d4e; --border-h:#3d4580;
+  --gold:#c8a44c; --gold-l:#e6cc88; --gold-dim:rgba(200,164,76,0.12);
+  --violet:#5a54b8; --violet-dim:rgba(90,84,184,0.15);
+  --text:#e0dbd2; --text2:#8a8ab4; --text3:#4e4e72;
+  --red:#b05555; --green:rgba(40,130,80,0.85);
+  --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{height:100%;font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── Auth ───────────────────────── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 0%,rgba(90,84,184,0.18) 0%,transparent 60%),
+             radial-gradient(ellipse at 85% 100%,rgba(200,164,76,0.07) 0%,transparent 50%),
+             var(--bg);}
+.auth-card{max-width:380px;width:90%;text-align:center;padding:3rem 2.5rem;
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  box-shadow:0 40px 100px rgba(0,0,0,0.6),0 0 80px rgba(90,84,184,0.08);}
+.auth-om{font-family:'Cinzel',serif;font-size:3.8rem;color:var(--gold);line-height:1;
+  margin-bottom:1.4rem;text-shadow:0 0 40px rgba(200,164,76,0.5);}
+.auth-title{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:600;
+  color:var(--gold-l);letter-spacing:.1em;margin-bottom:.3rem;}
+.auth-sub{font-size:.72rem;letter-spacing:.2em;color:var(--text3);
+  margin-bottom:1.8rem;text-transform:uppercase;}
+.auth-desc{font-size:.88rem;color:var(--text2);margin-bottom:2rem;
+  line-height:1.7;font-style:italic;}
+.auth-divider{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;color:var(--text3);font-size:.7rem;letter-spacing:.1em}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+#g_id_signin{display:flex;justify-content:center}
+.auth-err{margin-top:1rem;color:var(--red);font-size:.82rem;display:none}
+
+/* ── App ───────────────────────── */
+#app{min-height:100vh}
+header{position:sticky;top:0;z-index:100;
+  background:rgba(13,16,34,.96);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);}
+.hdr{max-width:1200px;margin:0 auto;padding:0 1.5rem;height:56px;
+  display:flex;align-items:center;gap:1.5rem;}
+.logo{display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.logo-om{font-family:'Cinzel',serif;font-size:1.35rem;color:var(--gold)}
+.logo-tx{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold-l);letter-spacing:.1em}
+.tab-nav{display:flex;gap:2px;flex:1}
+.tab-btn{padding:.4rem 1.1rem;background:none;border:none;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.1em;
+  color:var(--text2);border-radius:6px;transition:all .2s;}
+.tab-btn:hover{color:var(--text);background:var(--card)}
+.tab-btn.active{color:var(--gold);background:var(--gold-dim)}
+.user-area{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+.user-pic{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--gold);object-fit:cover}
+.user-nm{font-size:.75rem;color:var(--text2);display:none}
+@media(min-width:600px){.user-nm{display:block}}
+.logout-btn{background:none;border:1px solid var(--border);color:var(--text3);
+  font-size:.72rem;padding:.28rem .65rem;border-radius:5px;cursor:pointer;
+  font-family:'Lora',serif;transition:all .2s;}
+.logout-btn:hover{border-color:var(--border-h);color:var(--text2)}
+
+/* ── Sort bar ───────────────────────── */
+.sort-bar{max-width:1200px;margin:0 auto;padding:.7rem 1.5rem;
+  display:flex;align-items:center;gap:.7rem;}
+.sort-lbl{font-size:.7rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.sort-btns{display:flex;gap:3px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:7px;padding:3px;}
+.sort-btn{background:none;border:none;padding:.28rem .85rem;border-radius:5px;
+  cursor:pointer;font-family:'Lora',serif;font-size:.78rem;
+  color:var(--text2);transition:all .2s;}
+.sort-btn.active{background:var(--gold-dim);color:var(--gold)}
+
+/* ── Main ───────────────────────── */
+main{max-width:1200px;margin:0 auto;padding:.4rem 1.5rem 5rem}
+
+/* ── Accordion group ───────────────────────── */
+.grp{margin-bottom:.4rem;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.grp-hdr{width:100%;display:flex;align-items:center;gap:.75rem;
+  padding:.85rem 1.1rem;background:var(--bg2);border:none;cursor:pointer;
+  text-align:left;transition:background .18s;}
+.grp-hdr:hover{background:var(--card)}
+.grp-ico{font-size:1.1rem;flex-shrink:0}
+.grp-tit{flex:1;font-family:'Cinzel',serif;font-size:.82rem;
+  color:var(--gold-l);letter-spacing:.04em;}
+.grp-cnt{font-size:.7rem;color:var(--text3);background:var(--bg);
+  padding:.12rem .5rem;border-radius:20px;border:1px solid var(--border)}
+.grp-chv{font-size:.7rem;color:var(--text3);transition:transform .28s}
+.grp.open .grp-chv{transform:rotate(180deg)}
+.grp-body{display:none;padding:.85rem;background:var(--bg)}
+.grp.open .grp-body{display:block}
+
+/* ── Card grid ───────────────────────── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:9px;
+  overflow:hidden;cursor:pointer;transition:border-color .18s,transform .18s,box-shadow .18s;}
+.card:hover{border-color:var(--gold);transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,0.45),0 0 20px rgba(200,164,76,0.07);}
+.c-thumb{position:relative;aspect-ratio:16/9;background:var(--bg2);overflow:hidden}
+.c-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .32s}
+.card:hover .c-thumb img{transform:scale(1.06)}
+.c-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1a1e36,#0e1020);color:var(--text3);font-size:.75rem;font-style:italic}
+.c-ov{position:absolute;inset:0;background:transparent;display:flex;
+  align-items:center;justify-content:center;transition:background .18s;}
+.card:hover .c-ov{background:rgba(0,0,0,.28)}
+.c-play{width:42px;height:42px;border-radius:50%;background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:scale(.65);transition:opacity .18s,transform .18s;}
+.card:hover .c-play{opacity:1;transform:scale(1)}
+.c-play svg{fill:#0d1022;margin-left:3px}
+.c-dur{position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,.75);
+  color:#ccc;font-size:.62rem;padding:1px 5px;border-radius:3px;font-family:sans-serif}
+.c-lvl{position:absolute;top:5px;left:5px;font-size:.6rem;padding:2px 6px;
+  border-radius:20px;font-family:sans-serif;font-weight:700;letter-spacing:.04em}
+.lv-adv{background:rgba(90,84,184,.82);color:#d0ccff}
+.lv-hi{background:rgba(160,90,30,.85);color:#ffd4a0}
+.lv-med{background:rgba(30,130,80,.85);color:#a0ffd4}
+.lv-est{background:rgba(150,30,70,.85);color:#ffa0cc}
+.c-info{padding:.6rem .7rem .7rem}
+.c-badge{display:inline-block;font-size:.6rem;color:var(--text2);
+  background:var(--bg2);border:1px solid var(--border);
+  padding:1px 5px;border-radius:3px;margin-bottom:.2rem}
+.c-date{font-size:.62rem;color:var(--text3);font-family:sans-serif;margin-bottom:.15rem}
+.c-title{font-size:.78rem;line-height:1.45;color:var(--text);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-notes{font-size:.68rem;color:var(--gold);font-style:italic;margin-top:.25rem;
+  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ── Video modal ───────────────────────── */
+.v-overlay{position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;padding:1rem;}
+.v-modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;max-width:900px;width:100%;position:relative;}
+.v-close{position:absolute;top:.55rem;right:.55rem;z-index:10;
+  background:rgba(0,0,0,.7);border:none;color:#fff;font-size:1.1rem;
+  width:28px;height:28px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;line-height:1;}
+.v-close:hover{background:rgba(200,164,76,.45)}
+#v-frame{aspect-ratio:16/9;width:100%}
+#v-frame iframe{width:100%;height:100%;border:none}
+.v-ext{width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1rem;
+  background:var(--bg);color:var(--text2);font-style:italic}
+.v-ext a{color:var(--gold);text-decoration:none;font-size:1rem;
+  border:1px solid var(--gold);padding:.5rem 1.4rem;border-radius:7px;
+  transition:background .2s;}
+.v-ext a:hover{background:var(--gold-dim)}
+.v-title{padding:.6rem 1rem;font-size:.82rem;color:var(--text2);
+  font-style:italic;border-top:1px solid var(--border)}
+
+@media(max-width:600px){
+  .cgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .hdr{padding:0 .8rem;gap:.8rem}
+  .logo-tx{display:none}
+  main{padding:.3rem .8rem 4rem}
+  .sort-bar{padding:.6rem .8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH SCREEN ════════════════════════════════════════ -->
+<div class="auth-wrap" id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-om">ॐ</div>
+    <h1 class="auth-title">Садхана</h1>
+    <p class="auth-sub">Сахаджа Йога · Задълбочени практики</p>
+    <p class="auth-desc">Тази страница е достъпна само за членове на колектива с&nbsp;акаунт <em>@sahajayoga.bg</em></p>
+    <div class="auth-divider">Вход с Google Workspace</div>
+    <div id="g_id_onload"
+      data-client_id="98039666274-si4cgqcvgo8rjf7drnsm88oujpkiu5eb.apps.googleusercontent.com"
+      data-callback="handleCredentialResponse"
+      data-hosted_domain="sahajayoga.bg">
+    </div>
+    <div class="g_id_signin"
+      data-type="standard"
+      data-size="large"
+      data-theme="filled_black"
+      data-text="signin_with"
+      data-shape="pill"
+      data-locale="bg">
+    </div>
+    <p class="auth-err" id="auth-err"></p>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ════════════════════════════════════════ -->
+<div id="app" hidden>
+  <header>
+    <div class="hdr">
+      <div class="logo">
+        <span class="logo-om">ॐ</span>
+        <span class="logo-tx">Садхана</span>
+      </div>
+      <nav class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('lectures')">Лекции</button>
+        <button class="tab-btn" onclick="switchTab('pujas')">Пуджи</button>
+      </nav>
+      <div class="user-area">
+        <img id="user-pic" class="user-pic" src="" alt="">
+        <span class="user-nm" id="user-nm"></span>
+        <button class="logout-btn" onclick="logout()">Изход</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sort-bar">
+    <span class="sort-lbl">Наредба:</span>
+    <div class="sort-btns">
+      <button class="sort-btn active" id="sort-btn-group" data-sort="group" onclick="setSort('group')">По ниво</button>
+      <button class="sort-btn" data-sort="date" onclick="setSort('date')">По дата</button>
+    </div>
+  </div>
+
+  <main id="main"></main>
+</div>
+
+<!-- ══ VIDEO MODAL ════════════════════════════════════════ -->
+<div class="v-overlay" id="v-overlay" hidden onclick="closeVideo()">
+  <div class="v-modal" onclick="event.stopPropagation()">
+    <button class="v-close" onclick="closeVideo()">✕</button>
+    <div id="v-frame"></div>
+    <div class="v-title" id="v-title"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════ */
+
+const LECTURES = [
+  // ── Средно напреднали ──
+  {date:'1988-08-06',title:'Да бъдем напълно завършени',url:'https://youtu.be/4A8EdUexIeM',dur:'9:51 мин',level:'med'},
+  {date:null,title:'Молитви към Шри Ганеша, дадени от Шри Матаджи',url:'https://youtu.be/3z7YRdJmaH4',dur:'1:43 мин',level:'med'},
+
+  // ── Напреднали ──
+  {date:'1976-03-30',title:'Същността на Пуджата',url:'https://www.youtube.com/watch?v=qcKXzedqYRg',dur:'5 мин',level:'adv'},
+  {date:'1977-02-20',title:'Творението — Делхи, Индия',url:'https://youtu.be/R3EsIRBZROg',dur:'1ч 11мин',level:'adv'},
+  {date:'1977-02-20',title:'Сътворението — първа част',url:'https://youtu.be/_hFwXKeVK0o',dur:'31:14 мин',level:'adv'},
+  {date:'1979-11-18',title:'Как да влезем в медитация',url:'https://youtu.be/OxNfSz8bLJk',dur:'14 мин',level:'adv'},
+  {date:'1980-01-27',title:'Трансформация (семинар Борди)',url:'https://youtu.be/LwLbRC3DFNI',dur:'13 мин',level:'adv'},
+  {date:'1980-04-24',title:'Как да медитирате върху различните чакри',url:'https://youtu.be/WLGwIGC-qMM',dur:'8 мин',level:'adv',notes:'Мантрите, елементите'},
+  {date:'1980-05-26',title:'Вниманието',url:'https://youtu.be/v8z7MNP5pww',dur:'46 мин',level:'adv'},
+  {date:'1980-06-21',title:'Благоприятността',url:'https://youtu.be/Mqle_MRNJOk',dur:'50:39 мин',level:'adv'},
+  {date:'1982-08-22',title:'Какво е пуджа?',url:'https://youtu.be/xelJv1N3Shw',dur:'17:38 мин',level:'adv'},
+  {date:'1983-09-29',title:'Творение, невинност и ОМ',url:'https://youtu.be/CFHJG18iSn0',dur:'3:40 мин',level:'adv'},
+  {date:'1991-02-16',title:'В сърцето има четири канала',url:'https://youtu.be/HGKNyHrLsRE',dur:'23:01 мин',level:'adv'},
+  {date:'1991-05-05',title:'Осъзнай Божественото в себе си',url:'https://youtu.be/2exKZOIitaI',dur:'21 мин',level:'adv'},
+  {date:'1991-11-10',title:'Вашата вътрешна красота',url:'https://youtu.be/0uKtYn9WhRk',dur:'22:14 мин',level:'adv'},
+  {date:null,title:'10-те първоучители',url:'https://youtu.be/XW3wU5q_PgA',dur:'33:17 мин',level:'adv'},
+  {date:null,title:'21 имена на Шри Брахмадева-Сарасвати',url:'https://youtu.be/CzKURGZJlzI',dur:'3:01 мин',level:'adv'},
+  {date:null,title:'КОГАТО МАЙКА Е ГУРУ',url:'https://youtu.be/k9IKM1WHJbU',dur:'18:41 мин',level:'adv'},
+  {date:null,title:'Деви Суктам за Наваратри',url:'https://youtu.be/lYLVA9AHIjU',dur:'7:30 мин',level:'adv'},
+  {date:null,title:'Разпъването на Христос и Агния чакра',url:'https://youtu.be/Dcrr-Y5YuCg',dur:'14:37 мин',level:'adv'},
+  {date:null,title:'Силата на водата (филм — подарък за Гуру пуджа 2010)',url:'https://youtu.be/pZ3J6KJ9X3U',dur:'12:35 мин',level:'adv'},
+  {date:null,title:'Шри Матаджи за Видя Лакшми и правенето на бандан',url:'https://youtu.be/oLg7O09l8h8',dur:'2 мин',level:'adv'},
+
+  // ── Много напреднали ──
+  {date:'1984-10-10',title:'Майко, моля Те, ела в сърцето ми',url:'https://youtu.be/n5btbVFBkrg',dur:'1:56 мин',level:'hi'},
+  {date:'1986-04-05',title:'От себепознание към себеосъзнаване (от пуджа)',url:'https://youtu.be/sqxU0izZOSY',dur:'24:13 мин',level:'hi'},
+  {date:null,title:'Медитация „Седнали в сърцето на Вселената" и Сахасрара пуджа 1989',url:'https://youtu.be/XPw8oiIZzPs',dur:'57 мин',level:'hi'},
+
+  // ── За установени ──
+  {date:'2001-11-18',title:'Да работим за света (Дивали пуджа)',url:'https://youtu.be/fhCmbsg8OQo',dur:'8 мин',level:'est',notes:'За установени и много напреднали'},
+];
+
+const PUJA_GROUPS = [
+  {id:'ganesh',title:'Шри Ганеша пуджи',icon:'🪔',items:[
+    {date:'1982-08-22',title:'Шри Ганеша пуджа — Женева, Швейцария',url:'https://youtu.be/ns8tG6LF5ck',dur:'1ч 51мин',notes:'Невинност и радост'},
+    {date:'1983-04-01',title:'Шри Ганеша пуджа — Шолапур, Индия',url:'https://youtu.be/GJdZoUNxpc4',dur:'32 мин'},
+    {date:'1984-09-02',title:'Шри Ганеша пуджа — Цермат, Швейцария',url:'https://youtu.be/bvkekEmFu3E',dur:'54:56 мин',notes:'Четирите обета'},
+    {date:'1985-08-04',title:'Шри Ганеша пуджа — Брайтън, Англия (само лекцията)',url:'https://youtu.be/8Xpx7DAiVd8',dur:'1ч 7мин'},
+    {date:'1986-01-01',title:'Шри Махаганеша пуджа — Ганапатипуле, Индия',url:'https://youtu.be/lNgQ-ezG3Y8',dur:'16:54 мин'},
+    {date:'1986-09-07',title:'Шри Ганеша пуджа — Сан Диего, САЩ',url:'https://youtu.be/RVubhLxB62Y',dur:'56:49 мин',notes:'Установяване на принципа'},
+    {date:'1987-05-16',title:'Шри Ганеша пуджа — Оукланд, Нова Зеландия',url:'https://youtu.be/W_YC0I9DY04',dur:'18 мин'},
+    {date:'1989-08-08',title:'Шри Ганеша пуджа — Les Diablerets, Швейцария',url:'https://youtu.be/v1z13V59Cf0',dur:'48 мин'},
+    {date:'1990-08-26',title:'Шри Ганеша пуджа — Ланерсбах, Австрия',url:'https://youtu.be/XNjOjjuq4ps',dur:'35:15 мин'},
+    {date:'1991-09-15',title:'Шри Ганеша пуджа — Кабела, Италия',url:'https://youtu.be/y7HIfXES-HM',dur:'44:36 мин',notes:'Качествата на Шри Ганеша'},
+    {date:'1992-09-02',title:'Шри Ганеша пуджа — Перт, Австралия',url:'https://youtu.be/8gq2Tc6O6IQ',dur:'38:20 мин',notes:'Гравитация и баланс'},
+    {date:'1993-07-21',title:'Шри Ганеша пуджа — Берлин, Германия',url:'https://youtu.be/iZ5-ry8_ciE',dur:'36 мин',notes:'Силите на Шри Ганеша'},
+  ]},
+  {id:'devi',title:'Шри Деви пуджи',icon:'🌺',items:[
+    {date:'1983-01-14',title:'Шри Махасарасвати пуджа — Насик, Индия',url:'https://youtu.be/5tbH_FU1h3w',dur:'26 мин'},
+    {date:'1983-03-04',title:'Шри Деви пуджа — Аделейд, Австралия',url:'https://youtu.be/NEVgxtYRJP8',dur:'35:38 мин'},
+    {date:'1983-03-14',title:'Шри Деви пуджа — Сидни, Австралия',url:'https://youtu.be/EuVyVBd5PFI',dur:'21 мин'},
+    {date:'1983-08-21',title:'Майката Земя и Махалакшми пуджа',url:'https://youtu.be/dH-k0JHkByM',dur:'51:20 мин'},
+    {date:'1985-05-31',title:'Шри Деви пуджа — Сан Диего, САЩ',url:'https://youtu.be/8E5NGt4W8KM',dur:'52:50 мин'},
+    {date:'1985-12-27',title:'Шри Деви пуджа — Брахмапури, Индия',url:'https://youtu.be/SJWMqoeMC30',dur:'32:59 мин',notes:'Само лекцията'},
+    {date:'1986-01-06',title:'Шри Махалакшми пуджа — Сангли, Индия',url:'https://youtu.be/oKRA3fu2cAg',dur:'36:49 мин'},
+    {date:'1986-08-03',title:'Шри Бхуми Дхара пуджа — Шюди Кемпс, Великобритания',url:'https://youtu.be/dinpdRAJJdQ',dur:'23:27 мин'},
+    {date:'1989-07-19',title:'Парамчайтаня пуджа — Мюнхен, Германия',url:'https://youtu.be/aB9Ea5Clhkg',dur:'29:43 мин'},
+    {date:'1990-06-19',title:'Шри Ади Кундалини пуджа — Меодлинг, Австрия',url:'https://youtu.be/qaChL9DAuZo',dur:'30 мин'},
+    {date:'1991-08-11',title:'Шри Ади Кундалини пуджа',url:'https://youtu.be/rYpFaA22Ufg',dur:'55:43 мин'},
+    {date:'1991-12-06',title:'Шри Раджа Раджешвари пуджа — Мадрас, Индия',url:'https://youtu.be/xJBdbApumeI',dur:'30 мин'},
+  ]},
+  {id:'durga',title:'Шри Дурга пуджи',icon:'⚡',items:[
+    {date:'1982-09-26',title:'Шри Дурга пуджа — Виена, Австрия',url:'https://youtu.be/5FzyseIn4Nw',dur:'53:17 мин'},
+  ]},
+  {id:'adishakti',title:'Шри Ади Шакти пуджи',icon:'🌟',items:[
+    {date:'1986-07-09',title:'Шри Ади Шакти пуджа — Мелун, Франция',url:'https://youtu.be/ZOd9lzcHUyo',dur:'51:33 мин'},
+    {date:'1993-06-06',title:'Шри Ади Шакти пуджа — Кабела Лигуре, Италия',url:'https://youtu.be/wAsFQnrfgis',dur:'56:07 мин',notes:'Плодът на познанието'},
+    {date:'1996-06-09',title:'Шри Ади Шакти пуджа — Кабела, Италия',url:'https://youtu.be/0-8cAufPzcc',dur:'53 мин'},
+    {date:'1998-06-21',title:'Шри Ади Шакти пуджа — Кабела, Италия',url:'https://youtu.be/W-sjdwLQIJk',dur:'29:40 мин',notes:'You Must Develop Humility'},
+    {date:'2001-06-03',title:'Шри Ади Шакти пуджа',url:'https://youtu.be/gUBhfCr7B1A',dur:'47 мин',notes:'Работата на Шри Ади Шакти'},
+    {date:'2002-06-23',title:'Шри Ади Шакти пуджа — Кабела, Италия',url:'https://youtu.be/h5wcTn_0A44',dur:'39:07 мин'},
+    {date:'2007-06-24',title:'Шри Ади Шакти пуджа — Кабела, Италия',url:'https://youtu.be/XyxrG1mYpak',dur:'33:42 мин'},
+  ]},
+  {id:'mahakali',title:'Шри Махакали пуджи',icon:'🌑',items:[
+    {date:'1982-10-19',title:'Шри Махакали пуджа — Лонавала, Индия',url:'https://youtu.be/Cub4UMmbF-8',dur:'11:42 мин',notes:'Вашето желание е ваша отговорност'},
+    {date:'1987-10-16',title:'Шри Махакали пуджа — Мюнхен, Германия',url:'https://youtu.be/WtY0tCU9Dvc',dur:'29 мин',notes:'Културата на духа'},
+    {date:'1989-06-19',title:'Шри Махакали пуджа',url:'https://youtu.be/1BryKUM4y98',dur:'26:15 мин',notes:'Първо установете Муладхара'},
+    {date:'1991-12-09',title:'Шри Махакали пуджа — Бангалор, Индия',url:'https://youtu.be/vYKQKY3Rrfo',dur:'27:04 мин'},
+  ]},
+  {id:'guru',title:'Гуру пуджи',icon:'🙏',items:[
+    {date:'1981-07-19',title:'Гуру Пурнима пуджа',url:'https://youtu.be/u71SMVLSmCo',dur:'56:18 мин'},
+    {date:'1982-07-04',title:'Гуру пуджа — Лондон, Англия',url:'https://youtu.be/AIH-7gLKxqw',dur:'1ч 22мин'},
+    {date:'1983-07-24',title:'Гуру пуджа',url:'https://youtu.be/aO_SxqsX2qA',dur:'49:34 мин'},
+    {date:'1991-07-29',title:'Гуру пуджа — Кабела (само лекцията и Гуру Гита)',url:'https://youtu.be/vC6nwbljG_c',dur:'1ч 11мин'},
+    {date:'1992-07-19',title:'Гуру пуджа — Кабела, Италия',url:'https://youtu.be/bgemowMb7lk',dur:'1ч 3мин',notes:'Гравитация'},
+    {date:'1999-08-01',title:'Гуру пуджа',url:'https://youtu.be/tsFR4lOVIU0',dur:'52 мин'},
+    {date:'2001-07-08',title:'Гуру пуджа — Кабела, Италия',url:'https://youtu.be/jh8yuEDkQX8',dur:'48:30 мин',notes:'Интроспекция, любов, чистота'},
+    {date:'2008-07-20',title:'Гуру пуджа — Кабела, Италия',url:'https://youtu.be/-68p-veeNzA',dur:'39:47 мин'},
+  ]},
+  {id:'sahasrara',title:'Сахасрара пуджи',icon:'✨',items:[
+    {date:'1979-05-05',title:'Сахасрара пуджа',url:'https://youtu.be/KuZ1sBzhvyg',dur:'23:49 мин'},
+    {date:'1989-05-06',title:'Сахасрара пуджа — Соренто, Италия',url:'https://youtu.be/ohjOQaKLxH8',dur:'35:52 мин',notes:'Критикуването; Как да поддържаме Сахасрара'},
+    {date:'1994-05-05',title:'Сахасрара пуджа — Кабела, Италия',url:'https://youtu.be/mUe5TENhe90',dur:'51:08 мин',notes:'Махамая сварупа'},
+    {date:'1995-05-05',title:'Сахасрара пуджа — Луксембург',url:'https://youtu.be/xviJI5BpK5g',dur:'27:15 мин'},
+    {date:'1996-05-05',title:'Сахасрара пуджа — Кабела Лигуре, Италия',url:'https://youtu.be/ExTfH1qIqkI',dur:'56:49 мин',notes:'Трябва да се чувствате отговорни, но бъдете смирени'},
+    {date:'1996-05-05',title:'108 благодарности — Сахасрара пуджа 1996',url:'https://youtu.be/7YYN00LSWyk',dur:'14 мин',notes:'За установени и много напреднали'},
+    {date:'1998-05-10',title:'Сахасрара пуджа — Кабела, Италия',url:'https://youtu.be/0ZdjCB4VpfM',dur:'1 час'},
+    {date:'1999-05-09',title:'Сахасрара пуджа — Кабела, Италия',url:'https://youtu.be/_CptanPeVBc',dur:'40:17 мин',notes:'Проверка на вибрации; целта на йогите'},
+    {date:'2004-05-09',title:'Сахасрара пуджа — Кабела, Италия',url:'https://youtu.be/lKq0o7fgfXQ',dur:'9:13 мин'},
+  ]},
+  {id:'navaratri',title:'Наваратри пуджи',icon:'🌙',items:[
+    {date:'1990-09-23',title:'Наваратри пуджа',url:'https://youtu.be/4WuQ6JNIdPw',dur:'1ч 24мин'},
+    {date:'1991-10-13',title:'Наваратри пуджа — Кабела, Италия',url:'https://youtu.be/LFvyLGZsL3Y',dur:'28 мин'},
+    {date:'1992-09-27',title:'Наваратри пуджа — Кабела, Италия',url:'https://www.youtube.com/watch?v=zfBJrUvNsIU',dur:'55:42 мин'},
+    {date:'1997-10-05',title:'Наваратри пуджа — Кабела, Италия',url:'https://youtu.be/Y2Geol1XjpA',dur:'43:33 мин'},
+    {date:'2001-10-21',title:'Наваратри пуджа — Лутраки, Гърция',url:'https://youtu.be/q_6_GRzl9C0',dur:'50:15 мин'},
+    {date:'2002-10-27',title:'Наваратри пуджа',url:'https://youtu.be/ZWGexBHjucU',dur:'47:05 мин'},
+  ]},
+  {id:'divali',title:'Дивали пуджи',icon:'🪔',items:[
+    {date:'1981-11-01',title:'Дивали пуджа',url:'https://youtu.be/L9DIcLJTYyg',dur:'54:48 мин'},
+    {date:'1987-10-25',title:'Дивали пуджа — Леко, Италия',url:'https://youtu.be/A5E09tB-H7o',dur:'53 мин'},
+    {date:'2003-11-09',title:'Дивали пуджа — Лос Анджелис, САЩ',url:'https://youtu.be/Epp_o1ktYMg',dur:'5:05 мин'},
+    {date:'2007-11-10',title:'Дивали пуджа — Нойда, Индия',url:'https://youtu.be/csWSKZezMLU',dur:'2 часа'},
+  ]},
+  {id:'christmas',title:'Коледни и Великденски пуджи',icon:'✝️',items:[
+    {date:'1981-12-25',title:'Коледна пуджа',url:'https://youtu.be/NVmUmMPSab0',dur:'1ч 2мин'},
+    {date:'1984-11-23',title:'Шри Исус пуджа — Лондон, Англия',url:'https://youtu.be/XNamM_uJdMM',dur:'35:25 мин'},
+    {date:'1986-12-25',title:'Коледна пуджа — Пуна, Индия',url:'https://youtu.be/fvdOipO5EGk',dur:'32 мин'},
+    {date:'1990-04-22',title:'Великденска пуджа',url:'https://youtu.be/0skQs3mhuqY',dur:'40:57 мин',notes:'Трябва да израствате вертикално'},
+    {date:'1990-12-25',title:'Коледна пуджа — Ганапатипуле, Индия',url:'https://youtu.be/xYUwSiarZkc',dur:'29 мин'},
+    {date:'1992-04-19',title:'Великденска пуджа',url:'https://youtu.be/VFZfPExZqF4',dur:'1ч 6мин'},
+    {date:'1992-12-25',title:'Коледна пуджа — Ганапатипуле, Индия',url:'https://youtu.be/vitBI6Wmqv4',dur:'41 мин'},
+    {date:'1993-04-11',title:'Великденска пуджа — Magliano Sabina, Италия',url:'https://youtu.be/A_KnxcZVLj0',dur:'42 мин'},
+    {date:'1994-12-27',title:'Коледна пуджа — Ганапатипуле, Индия',url:'https://youtu.be/SOBO4u3QgUo',dur:'1ч 58мин'},
+    {date:'1996-12-25',title:'Коледна пуджа — Ганапатипуле, Индия',url:'https://youtu.be/b8r8kZ5uZUw',dur:'1ч 1мин',notes:'Културата на Майката'},
+    {date:'2000-12-25',title:'Коледна пуджа — Ганапатипуле, Индия',url:'https://youtu.be/7szBFREBzRc',dur:'22:28 мин'},
+  ]},
+  {id:'birthday',title:'Рожден ден на Шри Матаджи',icon:'🌸',items:[
+    {date:'1983-03-30',title:'Пуджа за Рождения ден',url:'https://youtu.be/A2MbBqfiEKo',dur:'16:46 мин'},
+    {date:'1985-03-17',title:'Пуджа за Рождения ден — Мелбърн, Австралия',url:'https://youtu.be/uJgTKJy-z28',dur:'1ч 9мин'},
+    {date:'1990-03-21',title:'Пуджа за Рожден ден — Сидни, Австралия',url:'https://youtu.be/odlX-zyv7OI',dur:'50:25 мин'},
+    {date:'1996-03-21',title:'Рожден ден пуджа — Делхи, Индия',url:'https://youtu.be/q4Bv-cjrwjM',dur:'51 мин'},
+  ]},
+  {id:'rama',title:'Шри Рама пуджи',icon:'🏹',items:[
+    {date:'1982-04-02',title:'Шри Рама Навами пуджа',url:'https://youtu.be/4EhJ2FC6BUg',dur:'1ч 21мин'},
+    {date:'1987-10-04',title:'Шри Рама пуджа — Les Avants, Швейцария',url:'https://youtu.be/NRWaXkXnY5I',dur:'2ч 43мин',notes:'Лекцията е 1ч 6мин'},
+  ]},
+  {id:'budha',title:'Шри Будха пуджи',icon:'🌿',items:[
+    {date:'1991-08-04',title:'Шри Будха пуджа — Дениз, Белгия',url:'https://youtu.be/ygMDj8BGWZ4',dur:'54:39 мин'},
+    {date:'1992-05-31',title:'Шри Будха пуджа — Шуди Кампс, Англия',url:'https://youtu.be/B4kJbkCzG7Q',dur:'37:14 мин'},
+  ]},
+  {id:'krishna',title:'Шри Кришна пуджи',icon:'🎵',items:[
+    {date:'1993-08-15',title:'Шри Кришна пуджа — Кабела, Италия',url:'https://youtu.be/SMDMWn_ObDU',dur:'55:39 мин'},
+    {date:'1994-08-28',title:'Шри Кришна пуджа — Кабела, Италия',url:'https://youtu.be/E8xyiUNGcGw',dur:'1ч 21мин'},
+  ]},
+  {id:'vishnumaya',title:'Шри Вишнумая пуджи',icon:'💜',items:[
+    {date:'1985-09-01',title:'Шри Вишнумая пуджа — Лондон, Англия',url:'https://youtu.be/krDdlxdItC0',dur:'50:38 мин',notes:'Силата на сестрата — само лекцията'},
+    {date:'1987-08-09',title:'Шри Вишнумая пуджа — Ню Йорк, САЩ',url:'https://youtu.be/4df3gsueGBU',dur:'44:13 мин'},
+    {date:'1992-07-04',title:'Шри Вишнумая пуджа',url:'https://youtu.be/33t-x6b1XN4',dur:'1ч 5мин'},
+    {date:'1992-09-20',title:'Шри Вишнумая пуджа — Шоуни, Пенсилвания, САЩ',url:'https://youtu.be/6gmWm_cxZfA',dur:'54:08 мин',notes:'Спрете да се чувствате виновни'},
+  ]},
+  {id:'virata',title:'Шри Вирата пуджи',icon:'👁',items:[
+    {date:'1989-06-11',title:'Шри Вирата пуджа — Ню Йорк, САЩ',url:'https://youtu.be/5pPxm819a6s',dur:'56:38 мин'},
+    {date:'1991-04-10',title:'Шри Вирата пуджа — Мелбърн, Австралия',url:'https://youtu.be/Vq044NcTIT4',dur:'41:52 мин'},
+  ]},
+  {id:'mahavira',title:'Шри Махавира пуджи',icon:'🕊',items:[
+    {date:'1990-06-16',title:'Шри Махавира пуджа — Барселона, Испания',url:'https://youtu.be/NVvTuKlZ5Fw',dur:'51 мин'},
+    {date:'1991-03-28',title:'Шри Махавира пуджа — Перт, Австралия',url:'https://youtu.be/LQav7n9ATxo',dur:'34:26 мин'},
+  ]},
+  {id:'newyear',title:'Новогодишни пуджи',icon:'🎆',items:[
+    {date:'2000-12-31',title:'Новогодишна пуджа — Калве, Индия',url:'https://youtu.be/UsTu2hk3eDM',dur:'35 мин',notes:'Само английската част'},
+    {date:'2001-12-31',title:'Новогодишна пуджа — Калве, Индия',url:'https://youtu.be/92Zx2cOn40E',dur:'29:59 мин'},
+  ]},
+  {id:'talks',title:'Разговори с йоги и Семинари',icon:'💬',items:[
+    {date:'1979-09-28',title:'Кундалини и Калки Шакти — Мумбай, Индия',url:'https://youtu.be/X9spt7V6b10',dur:'44:58 мин'},
+    {date:'1980-06-08',title:'Разговор — Фината природа (беседа в Долис Хил, Лондон)',url:'https://youtu.be/UDm_pcIBlAE',dur:'53:43 мин',notes:'За много напреднали'},
+    {date:'1982-06-07',title:'Разговор — Его и смирение (беседа в Nightingale Lane, Лондон)',url:'https://youtu.be/3RTco_SR3CM',dur:'1ч 10мин'},
+    {date:'1984-09-16',title:'Екадеша Рудра пуджа — Комо, Италия',url:'https://youtu.be/W4ewWoVyTnI',dur:'1ч 3мин'},
+    {date:'1988-06-08',title:'Екадаша Рудра пуджа — Mödling, Австрия',url:'https://youtu.be/Lhhi3O3sitk',dur:'40:27 мин'},
+    {date:'1988-06-18',title:'Семинар в Шуди Камп — ден 1-ви',url:'https://youtu.be/zc5Ql0l4ri4',dur:'34 мин'},
+    {date:'1988-06-19',title:'Семинар в Шуди Камп — ден 2-ри',url:'https://youtu.be/DV6G9on0SwU',dur:'2ч 2мин',notes:'Субтитри до 49 мин'},
+  ]},
+  {id:'various',title:'Различни пуджи',icon:'🌊',items:[
+    {date:'1980-06-21',title:'Благоприятността',url:'https://youtu.be/Mqle_MRNJOk',dur:'50:39 мин'},
+    {date:'1982-08-01',title:'21 имена на Шри Вишну (преди всяка пуджа)',url:'https://youtu.be/58rKK-qfmEM',dur:'6 мин'},
+    {date:'1984-10-10',title:'Поставете ме в сърцето си',url:'https://youtu.be/HauO8tGZCgQ',dur:'50:21 мин'},
+    {date:'1986-07-13',title:'Шри Картикея пуджа — Германия',url:'https://youtu.be/ac-CRTKP_-E',dur:'46:32 мин'},
+    {date:'1987-01-14',title:'Макар Санкранти пуджа — Рахури, Индия',url:'https://youtu.be/FBC2xbmdioE',dur:'2ч 14мин',notes:'Цялата пуджа'},
+    {date:'1988-01-10',title:'Шри Сурия пуджа (Макар Санкрант)',url:'https://youtu.be/MUpH561_MTc',dur:'37:20 мин',notes:'Основната ос в Сахаджа йога'},
+    {date:'1990-05-28',title:'Хамса чакра пуджа — Сан Диего, САЩ',url:'https://youtu.be/-ok6n5KxYYw',dur:'50 мин'},
+    {date:'1990-08-31',title:'Ханумана пуджа — Франкфурт, Германия',url:'https://vimeo.com/88510771/48dbe38ae6',dur:'45:12 мин',notes:'Дясната страна, електромагнетичната сила'},
+    {date:'1991-04-28',title:'Хамса чакра',url:'https://youtu.be/yJ_jT-5Q7YA',dur:'1ч 38мин'},
+    {date:'1992-09-13',title:'Хамса чакра пуджа — Ванкувър, Канада',url:'https://youtu.be/xQV1NHjubJg'},
+    {date:'2001-02-25',title:'Махашиваратри пуджа',url:'https://youtu.be/e_et-ooie4A',dur:'53:50 мин'},
+    {date:'2002-03-17',title:'Махашиваратри пуджа',url:'https://youtu.be/kmU56IezpPc',dur:'45:21 мин'},
+  ]},
+];
+
+/* ═══════════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════════ */
+const SKEY = 'sy_sadhana_auth';
+
+function handleCredentialResponse(resp) {
+  try {
+    const raw = resp.credential.split('.')[1];
+    const pad = raw + '='.repeat((4 - raw.length % 4) % 4);
+    const p = JSON.parse(atob(pad.replace(/-/g,'+').replace(/_/g,'/')));
+    if (p.hd !== 'sahajayoga.bg') {
+      showAuthErr('Само членове на sahajayoga.bg могат да достъпят тази страница.');
+      return;
+    }
+    const auth = {name: p.given_name || p.name, email: p.email, pic: p.picture, exp: p.exp};
+    sessionStorage.setItem(SKEY, JSON.stringify(auth));
+    launchApp(auth);
+  } catch(e) {
+    showAuthErr('Грешка при удостоверяване. Моля опитайте отново.');
+  }
+}
+
+function showAuthErr(msg) {
+  const el = document.getElementById('auth-err');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function checkSession() {
+  try {
+    const s = sessionStorage.getItem(SKEY);
+    if (!s) return false;
+    const a = JSON.parse(s);
+    if (a.exp * 1000 < Date.now()) { sessionStorage.removeItem(SKEY); return false; }
+    launchApp(a);
+    return true;
+  } catch(e) { return false; }
+}
+
+function launchApp(auth) {
+  document.getElementById('auth-screen').hidden = true;
+  document.getElementById('app').hidden = false;
+  const pic = document.getElementById('user-pic');
+  if (auth.pic) { pic.src = auth.pic; } else { pic.style.display = 'none'; }
+  document.getElementById('user-nm').textContent = auth.name || auth.email;
+  render();
+}
+
+function logout() {
+  sessionStorage.removeItem(SKEY);
+  document.getElementById('app').hidden = true;
+  document.getElementById('auth-screen').hidden = false;
+  try { google.accounts.id.disableAutoSelect(); } catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════
+   STATE & NAV
+═══════════════════════════════════════════════════ */
+let TAB = 'lectures', SORT = 'group';
+
+function switchTab(t) {
+  TAB = t; SORT = 'group';
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&t==='lectures')||(i===1&&t==='pujas')));
+  document.querySelectorAll('.sort-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.getElementById('sort-btn-group').textContent = t === 'lectures' ? 'По ниво' : 'По вид';
+  render();
+}
+
+function setSort(s) {
+  SORT = s;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === s));
+  render();
+}
+
+function toggleGrp(btn) { btn.closest('.grp').classList.toggle('open'); }
+
+/* ═══════════════════════════════════════════════════
+   VIDEO
+═══════════════════════════════════════════════════ */
+function ytId(url) {
+  if (!url) return null;
+  const m = url.match(/(?:youtu\.be\/|[?&]v=)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+document.getElementById('main').addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const url = card.dataset.url, title = card.dataset.title;
+  document.getElementById('v-title').textContent = title;
+  const frame = document.getElementById('v-frame');
+  if (url.includes('vimeo')) {
+    frame.innerHTML = `<div class="v-ext"><p>Видеото е в Vimeo</p><a href="${url}" target="_blank" rel="noopener">Отвори в Vimeo →</a></div>`;
+  } else {
+    const id = ytId(url);
+    if (id) frame.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allow="autoplay;encrypted-media" allowfullscreen></iframe>`;
+  }
+  document.getElementById('v-overlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+});
+
+function closeVideo() {
+  document.getElementById('v-overlay').hidden = true;
+  document.getElementById('v-frame').innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════════ */
+const LVL_CFG = {
+  med:  {cls:'lv-med', lbl:'СР. НАПРЕДНАЛИ', title:'Средно напреднали', ico:'🌱'},
+  adv:  {cls:'lv-adv', lbl:'НАПРЕДНАЛИ',     title:'Напреднали',        ico:'🌟'},
+  hi:   {cls:'lv-hi',  lbl:'МН. НАПРЕДНАЛИ', title:'Много напреднали',  ico:'✨'},
+  est:  {cls:'lv-est', lbl:'УСТАНОВЕНИ',      title:'За установени йоги',ico:'👁'},
+};
+
+function card(item, badge) {
+  const id = ytId(item.url);
+  const thumb = id
+    ? `<img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy">`
+    : `<div class="c-placeholder">Vimeo</div>`;
+  const lc = item.level ? LVL_CFG[item.level] : null;
+  const lvlHtml = lc ? `<span class="c-lvl ${lc.cls}">${lc.lbl}</span>` : '';
+  const durHtml = item.dur ? `<div class="c-dur">${item.dur}</div>` : '';
+  const badgeHtml = badge ? `<div class="c-badge">${badge}</div>` : '';
+  const dateHtml = item.date ? `<div class="c-date">${item.date.replace(/-/g,'.')}</div>` : '';
+  const notesHtml = item.notes ? `<div class="c-notes">${item.notes}</div>` : '';
+  const safeUrl = (item.url||'').replace(/"/g,'&quot;');
+  const safeTitle = (item.title||'').replace(/"/g,'&quot;');
+  return `<div class="card" data-url="${safeUrl}" data-title="${safeTitle}">
+    <div class="c-thumb">${thumb}<div class="c-ov"><div class="c-play"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 1.5l9 5.5-9 5.5z"/></svg></div></div>${lvlHtml}${durHtml}</div>
+    <div class="c-info">${badgeHtml}${dateHtml}<div class="c-title">${item.title}</div>${notesHtml}</div>
+  </div>`;
+}
+
+function group(grp, open) {
+  const sorted = [...grp.items].sort((a,b) => (a.date||'9999') < (b.date||'9999') ? -1 : 1);
+  return `<div class="grp${open?' open':''}">
+    <button class="grp-hdr" onclick="toggleGrp(this)">
+      <span class="grp-ico">${grp.icon}</span>
+      <span class="grp-tit">${grp.title}</span>
+      <span class="grp-cnt">${sorted.length}</span>
+      <span class="grp-chv">▼</span>
+    </button>
+    <div class="grp-body"><div class="cgrid">${sorted.map(i=>card(i)).join('')}</div></div>
+  </div>`;
+}
+
+function render() {
+  const el = document.getElementById('main');
+  if (TAB === 'lectures') {
+    if (SORT === 'group') {
+      const order = ['med','adv','hi','est'];
+      const byLvl = {};
+      LECTURES.forEach(l => { (byLvl[l.level]||(byLvl[l.level]=[])).push(l); });
+      el.innerHTML = order.filter(k=>byLvl[k]).map((k,i) => {
+        const cfg = LVL_CFG[k];
+        const g = {icon:cfg.ico, title:cfg.title, items:byLvl[k]};
+        return group(g, i===0);
+      }).join('');
+    } else {
+      const sorted = [...LECTURES].sort((a,b) => (a.date||'9999') < (b.date||'9999') ? -1 : 1);
+      el.innerHTML = `<div class="cgrid">${sorted.map(l=>card(l)).join('')}</div>`;
+    }
+  } else {
+    if (SORT === 'group') {
+      el.innerHTML = PUJA_GROUPS.map((g,i) => group(g, i===0)).join('');
+    } else {
+      const all = [];
+      PUJA_GROUPS.forEach(g => g.items.forEach(p => all.push({...p, _grp:g.title})));
+      all.sort((a,b) => (a.date||'9999') < (b.date||'9999') ? -1 : 1);
+      el.innerHTML = `<div class="cgrid">${all.map(p=>card(p,p._grp)).join('')}</div>`;
+    }
+  }
+}
+
+/* ── Init ── */
+window.addEventListener('DOMContentLoaded', () => {
+  if (!checkSession()) document.getElementById('auth-screen').hidden = false;
+});
+</script>
+</body>
+</html>
